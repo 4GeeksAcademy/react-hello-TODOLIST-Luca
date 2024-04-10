@@ -1,26 +1,47 @@
-import React from "react";
+import React, { useState } from 'react';
+import TaskList from './TaskList';
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
-
-//create your first component
 const Home = () => {
-	return (
-		<div className="text-center">
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
-		</div>
-	);
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
+
+  const handleAddTask = () => {
+    if (newTask.trim() !== '') {
+      setTasks([...tasks, newTask.trim()]);
+      setNewTask('');
+    }
+  };
+
+  const handleChange = (event) => {
+    setNewTask(event.target.value);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleAddTask();
+    }
+  };
+
+  const handleDeleteTask = (index) => {
+    const updatedTasks = tasks.filter((task, i) => i !== index);
+    setTasks(updatedTasks);
+  };
+ 
+  return (
+    <div className="container">
+      <h1>Todo List</h1>
+      <input
+        type="text"
+        value={newTask}
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+        placeholder="Enter a task..."
+      />
+      <button onClick={handleAddTask}>Add Task</button>
+      <TaskList tasks={tasks} onDeleteTask={handleDeleteTask} />
+      {tasks.length === 0 && <p className="empty-message">No tasks, add a task</p>}
+    </div>
+  );
 };
 
 export default Home;
